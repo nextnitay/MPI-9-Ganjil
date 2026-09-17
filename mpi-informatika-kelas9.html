@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MPI Informatika Kelas 9 — Semester Ganjil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F5FA;
+  --surface:#FFFFFF;
+  --surface-2:#F2F1F8;
+  --ink:#16112B;
+  --ink-2:#3D3560;
+  --muted:#7A7391;
+  --violet:#6D28D9;
+  --violet-2:#9B5CF6;
+  --violet-soft:#EFE8FF;
+  --silver:#B9BCCB;
+  --silver-2:#E4E6EF;
+  --line:#E2E0EE;
+  --good:#12A150;
+  --good-soft:#E4F7EC;
+  --bad:#D92D42;
+  --bad-soft:#FDE8EB;
+  --glow:rgba(109,40,217,.22);
+  --shadow:0 12px 32px -20px rgba(30,15,70,.6);
+  --chrome:linear-gradient(135deg,#FFFFFF 0%,#E6E7F0 38%,#B9BCCB 55%,#EFF0F6 78%,#FFFFFF 100%);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A0716;
+    --surface:#140F26;
+    --surface-2:#1B1533;
+    --ink:#F0ECFF;
+    --ink-2:#CCC3EA;
+    --muted:#9B92B8;
+    --violet:#A97BFF;
+    --violet-2:#C9A6FF;
+    --violet-soft:#241A40;
+    --silver:#8E93AB;
+    --silver-2:#2A2545;
+    --line:#2A2347;
+    --good:#41D486;
+    --good-soft:#0E2C1E;
+    --bad:#FF6F80;
+    --bad-soft:#2E1119;
+    --glow:rgba(169,123,255,.3);
+    --shadow:0 12px 32px -20px rgba(0,0,0,.95);
+    --chrome:linear-gradient(135deg,#3A3358 0%,#544C7C 38%,#8E93AB 55%,#443C68 78%,#2C2648 100%);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A0716;--surface:#140F26;--surface-2:#1B1533;--ink:#F0ECFF;--ink-2:#CCC3EA;--muted:#9B92B8;
+  --violet:#A97BFF;--violet-2:#C9A6FF;--violet-soft:#241A40;--silver:#8E93AB;--silver-2:#2A2545;--line:#2A2347;
+  --good:#41D486;--good-soft:#0E2C1E;--bad:#FF6F80;--bad-soft:#2E1119;--glow:rgba(169,123,255,.3);
+  --shadow:0 12px 32px -20px rgba(0,0,0,.95);
+  --chrome:linear-gradient(135deg,#3A3358 0%,#544C7C 38%,#8E93AB 55%,#443C68 78%,#2C2648 100%);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:15px;line-height:1.66;-webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.brandmark,.stat-num,.slab{font-family:"Sora","Manrope",sans-serif;letter-spacing:-.02em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--violet-2);outline-offset:2px;border-radius:6px}
+
+.shell{max-width:520px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden;
+  border-left:1px solid var(--line);border-right:1px solid var(--line)}
+@media (max-width:540px){.shell{border:0}}
+.page{display:none;padding:0 0 124px}
+.page.active{display:block}
+
+/* topbar */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;padding:12px 18px;
+  background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.logo{width:34px;height:34px;flex:none;border-radius:12px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(140deg,var(--violet),var(--violet-2));box-shadow:0 6px 18px -7px var(--glow)}
+.logo svg{width:19px;height:19px}
+.brandmark{font-size:15px;font-weight:700;line-height:1.1}
+.brandsub{font-size:11px;color:var(--muted);line-height:1.2}
+.theme-btn{margin-left:auto;width:34px;height:34px;border-radius:12px;flex:none;border:1px solid var(--line);
+  background:var(--surface-2);display:grid;place-items:center;cursor:pointer;color:var(--ink-2)}
+.theme-btn svg{width:17px;height:17px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:30px 18px 34px;border-bottom:1px solid var(--line);
+  background:radial-gradient(115% 85% at 15% -15%, var(--glow) 0%, transparent 60%),
+             linear-gradient(180deg,var(--surface) 0%,var(--bg) 100%)}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.6;
+  background-image:repeating-linear-gradient(115deg,transparent 0 22px,color-mix(in srgb,var(--silver) 40%,transparent) 22px 23px);
+  -webkit-mask-image:radial-gradient(85% 70% at 100% 0%,#000,transparent 70%);
+  mask-image:radial-gradient(85% 70% at 100% 0%,#000,transparent 70%)}
+.hero>*{position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--violet);
+  background:var(--violet-soft);border:1px solid color-mix(in srgb,var(--violet) 22%,transparent);
+  padding:5px 11px;border-radius:999px;margin-bottom:14px}
+.eyebrow svg{width:13px;height:13px}
+.hero h1{font-size:28px;line-height:1.15;margin:0 0 10px;font-weight:700}
+.hero p{margin:0;color:var(--ink-2);font-size:14.5px;max-width:42ch}
+.hero-cta{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 17px;border-radius:14px;border:1px solid transparent;
+  font-size:13.5px;font-weight:600;cursor:pointer}
+.btn svg{width:16px;height:16px}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--violet-2));color:#fff;box-shadow:0 12px 26px -14px var(--glow)}
+.btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:12px 10px;text-align:center;
+  position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:var(--chrome)}
+.stat-num{font-size:20px;font-weight:700;color:var(--violet);line-height:1.1}
+.stat-lab{font-size:10.5px;color:var(--muted);line-height:1.3;margin-top:3px}
+
+/* sections */
+.section{padding:26px 18px 6px}
+.sec-head{margin-bottom:14px}
+.sec-kicker{font-size:11.5px;font-weight:600;color:var(--silver);display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.sec-kicker::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--silver-2),transparent)}
+.sec-head h2{font-size:21px;margin:0 0 6px;line-height:1.24}
+.sec-head p{margin:0;color:var(--muted);font-size:13.5px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:17px;
+  box-shadow:var(--shadow);margin-bottom:12px}
+.card h3{font-size:16.5px;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.card p{margin:0 0 10px;color:var(--ink-2);font-size:14px}
+.card p:last-child{margin-bottom:0}
+.ico{width:35px;height:35px;flex:none;border-radius:12px;display:grid;place-items:center;
+  background:var(--violet-soft);color:var(--violet);border:1px solid color-mix(in srgb,var(--violet) 18%,transparent)}
+.ico svg{width:18px;height:18px}
+.ico.sil{background:var(--surface-2);color:var(--ink-2);border-color:var(--silver-2)}
+
+.menu-card{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--surface);
+  border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px;cursor:pointer;
+  box-shadow:var(--shadow);position:relative;overflow:hidden}
+.menu-card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--violet),var(--silver))}
+.menu-card .mc-t{font-family:"Sora",sans-serif;font-weight:600;font-size:15px}
+.menu-card .mc-d{font-size:12.5px;color:var(--muted);line-height:1.45}
+.menu-card .chev{margin-left:auto;color:var(--silver);flex:none}
+.menu-card .chev svg{width:18px;height:18px}
+
+.blist{list-style:none;padding:0;margin:0}
+.blist li{position:relative;padding:9px 0 9px 26px;font-size:13.8px;color:var(--ink-2);border-bottom:1px dashed var(--line)}
+.blist li:last-child{border-bottom:0;padding-bottom:0}
+.blist li::before{content:"";position:absolute;left:5px;top:17px;width:7px;height:7px;border-radius:2px;
+  transform:rotate(45deg);background:linear-gradient(140deg,var(--violet),var(--violet-2))}
+.blist b{color:var(--ink)}
+
+.drow{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.drow:last-child{border-bottom:0;padding-bottom:0}
+.drow .dico{width:31px;height:31px;flex:none;border-radius:10px;display:grid;place-items:center;
+  background:var(--surface-2);border:1px solid var(--silver-2);color:var(--violet);font-weight:700;font-size:13px}
+.drow .dico svg{width:16px;height:16px}
+.drow .dt{font-weight:600;font-size:13.8px;line-height:1.4}
+.drow .dd{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* carousel */
+.carousel{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 18px 12px;margin:0 -18px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.slide{flex:0 0 84%;scroll-snap-align:center;background:var(--surface);border:1px solid var(--line);
+  border-radius:19px;padding:16px;box-shadow:var(--shadow)}
+.slide-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.slide h4{margin:0;font-size:15.5px}
+.carousel{touch-action:pan-x pan-y;overscroll-behavior-x:contain}
+.slide{user-select:none}
+.cnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:2px}
+.cbtn{width:34px;height:34px;flex:none;border-radius:12px;border:1px solid var(--line);background:var(--surface);
+  color:var(--violet);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
+.cbtn svg{width:17px;height:17px}
+.cbtn:disabled{opacity:.35;cursor:default;color:var(--muted)}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:2px}
+.dot{width:6px;height:6px;border-radius:99px;background:var(--silver-2);transition:width .25s,background .25s}
+.dot.on{width:20px;background:var(--violet)}
+
+/* keyboard keys */
+.kbd-grid{display:flex;flex-direction:column;gap:9px}
+.kbd-row{display:flex;gap:11px;align-items:center;background:var(--surface);border:1px solid var(--line);
+  border-radius:15px;padding:11px 12px}
+.keys{display:flex;gap:4px;align-items:center;flex:none;min-width:104px}
+kbd{font-family:"Sora",sans-serif;font-size:11.5px;font-weight:600;color:var(--ink);
+  background:var(--chrome);border:1px solid var(--silver);border-radius:7px;padding:4px 7px;
+  box-shadow:0 2px 0 var(--silver),inset 0 1px 0 rgba(255,255,255,.7);line-height:1.1;white-space:nowrap}
+.keys span{color:var(--silver);font-size:11px}
+.kbd-row .kt{font-size:12.8px;color:var(--ink-2);line-height:1.45}
+.kbd-row .kt b{color:var(--ink)}
+
+/* tree explorer */
+.tree-wrap{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:15px 12px 13px;
+  box-shadow:var(--shadow);margin-bottom:12px}
+.tree-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.tree-tabs::-webkit-scrollbar{display:none}
+.tree-tabs button{flex:none;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);
+  border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+.tree-tabs button.on{background:var(--violet);border-color:var(--violet);color:#fff}
+.tree-svg{display:block;width:100%;height:auto}
+.tn circle{fill:var(--surface-2);stroke:var(--silver);stroke-width:2;transition:fill .2s,stroke .2s}
+.tn text{font-family:"Sora",sans-serif;font-size:13px;font-weight:600;fill:var(--ink-2);text-anchor:middle;dominant-baseline:central}
+.tn.hit circle{fill:var(--violet);stroke:var(--violet)}
+.tn.hit text{fill:#fff}
+.tn.dim circle{opacity:.45}
+.tedge{stroke:var(--silver-2);stroke-width:2}
+.tnote{font-size:12.8px;color:var(--ink-2);text-align:center;padding:8px 6px 0;border-top:1px dashed var(--line);margin-top:6px}
+.tnote b{color:var(--violet)}
+
+.mini{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--line)}
+.mini:last-child{border-bottom:0;padding-bottom:0}
+.mini svg{width:70px;height:56px}
+.mini .mt{font-weight:600;font-size:13.8px}
+.mini .md{font-size:12.6px;color:var(--muted);line-height:1.5}
+.mini .ml{stroke:var(--silver);stroke-width:1.8}
+.mini .mc{fill:var(--violet);r:5}
+.mini .mo{fill:none;stroke:var(--violet);stroke-width:1.8;stroke-dasharray:3 2.5}
+
+.profile{display:flex;gap:13px;align-items:center;background:var(--surface);border:1px solid var(--line);
+  border-radius:19px;padding:15px;box-shadow:var(--shadow)}
+.avatar{width:53px;height:53px;flex:none;border-radius:17px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(140deg,var(--violet),var(--violet-2));font-family:"Sora",sans-serif;font-weight:700;font-size:18px;
+  box-shadow:0 8px 20px -10px var(--glow)}
+.foot{padding:26px 18px 8px;text-align:center;color:var(--muted);font-size:11.5px;border-top:1px solid var(--line);margin-top:24px}
+
+/* quiz */
+.q-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;font-size:12.5px;color:var(--muted)}
+.bar{height:7px;border-radius:99px;background:var(--silver-2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--violet),var(--violet-2));transition:width .35s ease}
+.qtext{font-size:16px;font-weight:600;line-height:1.5;margin:16px 0 14px;font-family:"Sora",sans-serif}
+.opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;cursor:pointer;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:15px;padding:12px 13px;margin-bottom:9px;transition:border-color .18s,background .18s}
+.opt .key{width:25px;height:25px;flex:none;border-radius:8px;display:grid;place-items:center;background:var(--surface-2);
+  border:1px solid var(--silver-2);font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.opt .txt{font-size:13.8px;line-height:1.5;padding-top:1px}
+.opt.correct{border-color:var(--good);background:var(--good-soft)}
+.opt.correct .key{background:var(--good);border-color:var(--good);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .key{background:var(--bad);border-color:var(--bad);color:#fff}
+.verdict{display:none;align-items:center;gap:9px;padding:11px 13px;border-radius:14px;font-size:13.2px;font-weight:600;margin-top:4px}
+.verdict.show{display:flex}
+.verdict svg{width:18px;height:18px;flex:none}
+.verdict.ok{background:var(--good-soft);color:var(--good)}
+.verdict.no{background:var(--bad-soft);color:var(--bad)}
+.q-actions{margin-top:14px}
+.q-actions .btn{width:100%;justify-content:center}
+.result{text-align:center;padding:8px 0}
+.ring{width:132px;height:132px;margin:6px auto 12px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring .rv{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:"Sora",sans-serif}
+.ring .rv b{font-size:31px;line-height:1;display:block}
+.ring .rv span{font-size:11px;color:var(--muted)}
+.recap{text-align:left;margin-top:16px}
+.recap .ri{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:12.8px;color:var(--ink-2)}
+.recap .ri:last-child{border-bottom:0}
+.recap .ri .rk{flex:none;width:20px;height:20px;border-radius:7px;display:grid;place-items:center;color:#fff}
+.recap .ri .rk svg{width:12px;height:12px}
+.recap .ri.ok .rk{background:var(--good)}
+.recap .ri.no .rk{background:var(--bad)}
+.recap .ri .ra{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+
+/* bottom nav — 6 tabs */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:520px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(6,1fr);
+  background:color-mix(in srgb,var(--surface) 93%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);padding:7px 2px calc(7px + env(safe-area-inset-bottom))}
+.nav button{background:none;border:0;cursor:pointer;padding:5px 1px;display:flex;flex-direction:column;
+  align-items:center;gap:3px;color:var(--muted);position:relative}
+.nav button .nb{width:34px;height:27px;border-radius:10px;display:grid;place-items:center;transition:background .2s}
+.nav button svg{width:19px;height:19px}
+.nav button span{font-size:9.2px;font-weight:600}
+.nav button.on{color:var(--violet)}
+.nav button.on .nb{background:var(--violet-soft)}
+.nav button.on::before{content:"";position:absolute;top:-8px;width:24px;height:3px;border-radius:99px;
+  background:linear-gradient(90deg,var(--violet),var(--silver))}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true"><defs>
+<symbol id="i-hex" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 2.6 20 7v10l-8 4.4L4 17V7z"/><path d="M12 8.4 15.6 10.5v4.2L12 16.8l-3.6-2.1v-4.2z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+<symbol id="i-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5a3 3 0 0 0-5.7-1.3A2.8 2.8 0 0 0 4 9.4a3 3 0 0 0 .6 4.8A2.9 2.9 0 0 0 7.5 19c.9 1 2.4 1.3 3.5.6.6-.4 1-1 1-1.8Z"/><path d="M12 5.5a3 3 0 0 1 5.7-1.3A2.8 2.8 0 0 1 20 9.4a3 3 0 0 1-.6 4.8A2.9 2.9 0 0 1 16.5 19c-.9 1-2.4 1.3-3.5.6-.6-.4-1-1-1-1.8Z"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M8 14h8"/></symbol>
+<symbol id="i-tree" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2.2"/><circle cx="6" cy="19.5" r="2.2"/><circle cx="18" cy="19.5" r="2.2"/><path d="M12 6.7v4.3M6 17.3V13a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4.3"/></symbol>
+<symbol id="i-quiz" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9a2.8 2.8 0 1 1 3.6 2.7c-.7.3-1 .9-1 1.6v.4M12 17.2h.01"/></symbol>
+<symbol id="i-split" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1.5"/><rect x="3" y="15" width="6" height="5" rx="1.5"/><rect x="15" y="15" width="6" height="5" rx="1.5"/><path d="M12 8v3M6 15v-2h12v2"/></symbol>
+<symbol id="i-pattern" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8.2 6h7.6M6 8.2v7.6M18 8.2v7.6M8.2 18h7.6"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 6h3a2 2 0 0 1 2 2v2M12 14v2a2 2 0 0 0 2 2h3"/></symbol>
+<symbol id="i-font" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19 10.5 5h1.8L18 19M8 14h8"/></symbol>
+<symbol id="i-align" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 10.5h10M4 15h16M4 19.5h10"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></symbol>
+<symbol id="i-page" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 6.5h8v11H8z" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.5h18M9 4v16M15 4v16"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5 19 12 7 19.5z"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.6-5.7L20 8"/><path d="M20 4v4h-4"/><path d="M20 12a8 8 0 0 1-13.6 5.7L4 16"/><path d="M4 20v-4h4"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H19v5H6.5"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5 5 13.5h5.5L10 21.5 19 10.5h-5.5z"/></symbol>
+</defs></svg>
+
+<div class="shell">
+  <header class="topbar">
+    <div class="logo"><svg><use href="#i-hex"/></svg></div>
+    <div>
+      <div class="brandmark">Informatika 9</div>
+      <div class="brandsub">Media Pembelajaran Interaktif · Ganjil</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="Ganti mode gelap"><svg><use href="#i-moon"/></svg></button>
+  </header>
+
+  <!-- ============ BERANDA ============ -->
+  <main class="page active" id="p-home">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-book"/></svg> Kelas 9 · Semester Ganjil</div>
+      <h1>Empat materi inti, satu aplikasi belajar.</h1>
+      <p>Dari cara berpikir memecahkan masalah, tools Microsoft Word, shortcut keyboard, sampai struktur data tree. Setiap materi disajikan utuh dan ditutup dengan kuis acak.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" data-go="bekom"><svg><use href="#i-play"/></svg> Mulai belajar</button>
+        <button class="btn btn-ghost" data-go="kuis"><svg><use href="#i-target"/></svg> Langsung kuis</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num">4</div><div class="stat-lab">Materi pokok</div></div>
+        <div class="stat"><div class="stat-num">17</div><div class="stat-lab">Shortcut</div></div>
+        <div class="stat"><div class="stat-num">60</div><div class="stat-lab">Bank soal</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">Daftar materi</div>
+        <h2>Pilih materi yang ingin dipelajari</h2>
+        <p>Semua materi bisa dibuka lewat menu di bagian bawah layar.</p>
+      </div>
+
+      <button class="menu-card" data-go="bekom">
+        <div class="ico"><svg><use href="#i-brain"/></svg></div>
+        <div><div class="mc-t">Berpikir Komputasional</div><div class="mc-d">Dekomposisi, pengenalan pola, abstraksi, dan algoritma beserta contoh penerapannya.</div></div>
+        <div class="chev"><svg><use href="#i-chev"/></svg></div>
+      </button>
+      <button class="menu-card" data-go="word">
+        <div class="ico"><svg><use href="#i-doc"/></svg></div>
+        <div><div class="mc-t">Tools Microsoft Word</div><div class="mc-d">Font, paragraph, insert, dan page layout tools beserta fungsi tiap fiturnya.</div></div>
+        <div class="chev"><svg><use href="#i-chev"/></svg></div>
+      </button>
+      <button class="menu-card" data-go="shortcut">
+        <div class="ico"><svg><use href="#i-key"/></svg></div>
+        <div><div class="mc-t">Pengenalan Shortcut</div><div class="mc-d">Tujuh belas kombinasi tombol keyboard yang mempercepat pekerjaan sehari-hari.</div></div>
+        <div class="chev"><svg><use href="#i-chev"/></svg></div>
+      </button>
+      <button class="menu-card" data-go="tree">
+        <div class="ico"><svg><use href="#i-tree"/></svg></div>
+        <div><div class="mc-t">Struktur Data Tree</div><div class="mc-d">Root, node, parent, child, sibling, leaf, serta lima jenis tree.</div></div>
+        <div class="chev"><svg><use href="#i-chev"/></svg></div>
+      </button>
+      <button class="menu-card" data-go="kuis">
+        <div class="ico sil"><svg><use href="#i-quiz"/></svg></div>
+        <div><div class="mc-t">Kuis Interaktif</div><div class="mc-d">Lima soal acak dari bank 60 soal, lengkap dengan skor dan rekap jawaban.</div></div>
+        <div class="chev"><svg><use href="#i-chev"/></svg></div>
+      </button>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">Pengajar</div><h2>Guru pengampu</h2></div>
+      <div class="profile">
+        <div class="avatar">KN</div>
+        <div>
+          <div style="font-family:'Sora',sans-serif;font-weight:600;font-size:15px">Komang Nitay Prasaddas, S.Kom</div>
+          <div style="font-size:12.5px;color:var(--muted)">Guru Informatika Kelas 9</div>
+        </div>
+      </div>
+      <div class="foot">Media Pembelajaran Interaktif · Informatika Kelas 9 Semester Ganjil</div>
+    </section>
+  </main>
+
+  <!-- ============ BERPIKIR KOMPUTASIONAL ============ -->
+  <main class="page" id="p-bekom">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-brain"/></svg> Materi I</div>
+      <h1>Berpikir Komputasional</h1>
+      <p>Cara menghadapi masalah dengan membagi, mencari pola, memilih informasi penting, lalu menyusun langkah penyelesaian.</p>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">A · Definisi</div><h2>Apa itu berpikir komputasional?</h2></div>
+      <div class="card">
+        <p>Berpikir Komputasional adalah metode pemecahan masalah yang menggunakan cara berpikir logis, terstruktur, dan analitis untuk menemukan solusi yang efektif, efisien, dan optimal.</p>
+        <p>Penerapannya membantu kita menghadapi masalah sehari-hari dengan membagi masalah, mencari pola, memilih informasi penting, lalu menyusun langkah penyelesaian secara teratur.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B · Empat bagian</div>
+        <h2>Bagian–bagian berpikir komputasional</h2>
+        <p>Keempatnya saling melengkapi dan biasanya dipakai berurutan saat menyelesaikan satu masalah.</p>
+      </div>
+      <div class="card">
+        <h3><span class="ico"><svg><use href="#i-split"/></svg></span> 1. Dekomposisi</h3>
+        <p>Dekomposisi adalah kemampuan memecah masalah atau sistem yang besar dan rumit menjadi bagian-bagian yang lebih kecil, sederhana, dan mudah dikelola. Fungsinya membantu kita fokus menyelesaikan setiap bagian satu per satu sehingga masalah yang kompleks terasa lebih mudah ditangani.</p>
+      </div>
+      <div class="card">
+        <h3><span class="ico"><svg><use href="#i-pattern"/></svg></span> 2. Pengenalan pola</h3>
+        <p>Pengenalan pola adalah proses mengamati kesamaan, keteraturan, atau pola yang berulang pada masalah atau data. Fungsinya membantu kita mengenali hubungan yang pernah terjadi sehingga pengalaman atau solusi dari masalah sebelumnya dapat dimanfaatkan untuk menyelesaikan masalah baru.</p>
+      </div>
+      <div class="card">
+        <h3><span class="ico"><svg><use href="#i-layers"/></svg></span> 3. Abstraksi</h3>
+        <p>Abstraksi adalah proses menyaring informasi dengan berfokus pada hal-hal yang penting dan relevan, serta mengabaikan detail yang tidak berpengaruh langsung terhadap penyelesaian masalah. Fungsinya membuat masalah menjadi lebih sederhana sehingga perhatian dapat diarahkan pada inti persoalan.</p>
+      </div>
+      <div class="card">
+        <h3><span class="ico"><svg><use href="#i-flow"/></svg></span> 4. Algoritma</h3>
+        <p>Algoritma adalah proses menyusun serangkaian instruksi atau langkah yang terurut, logis, dan jelas untuk menyelesaikan masalah atau mencapai tujuan. Fungsinya memberikan urutan kerja yang dapat diikuti secara sistematis sehingga proses penyelesaian menjadi lebih terarah.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">C · Geser untuk melihat semua</div>
+        <h2>Contoh penerapan</h2>
+        <p>Tiga contoh nyata untuk setiap bagian berpikir komputasional.</p>
+      </div>
+      <div class="carousel" id="carousel">
+        <div class="slide">
+          <div class="slide-top"><span class="ico"><svg><use href="#i-split"/></svg></span><h4>Dekomposisi</h4></div>
+          <ul class="blist">
+            <li><b>Merapikan kamar:</b> membagi pekerjaan menjadi merapikan tempat tidur, melipat pakaian, menyusun buku, dan membersihkan lantai.</li>
+            <li><b>Mengerjakan tugas sekolah:</b> membagi pekerjaan menjadi mencari materi, membuat kerangka, menulis isi, dan memeriksa hasil.</li>
+            <li><b>Menyiapkan acara kelas:</b> membagi tugas menjadi menentukan waktu, membuat daftar kebutuhan, membagi peran, dan menyiapkan tempat.</li>
+          </ul>
+        </div>
+        <div class="slide">
+          <div class="slide-top"><span class="ico"><svg><use href="#i-pattern"/></svg></span><h4>Pengenalan pola</h4></div>
+          <ul class="blist">
+            <li><b>Belajar matematika:</b> mengenali bahwa beberapa soal berbeda memiliki pola rumus yang sama sehingga cara penyelesaiannya dapat digunakan kembali.</li>
+            <li><b>Perjalanan ke sekolah:</b> memperhatikan bahwa jalan tertentu selalu padat pada jam tertentu sehingga dapat memilih rute atau waktu yang lebih sesuai.</li>
+            <li><b>Belanja:</b> melihat pola bahwa harga barang tertentu sering turun pada periode promosi sehingga pembelian dapat direncanakan berdasarkan pola tersebut.</li>
+          </ul>
+        </div>
+        <div class="slide">
+          <div class="slide-top"><span class="ico"><svg><use href="#i-layers"/></svg></span><h4>Abstraksi</h4></div>
+          <ul class="blist">
+            <li><b>Membaca peta:</b> fokus pada nama lokasi, arah, dan jalur yang dibutuhkan tanpa memikirkan setiap detail gambar peta.</li>
+            <li><b>Menggunakan mesin cuci:</b> cukup memahami pilihan program, tombol mulai, dan pengaturan dasar tanpa harus memahami seluruh mekanisme mesin.</li>
+            <li><b>Merangkum materi:</b> mengambil gagasan utama dari materi dan mengabaikan detail yang tidak diperlukan untuk memahami inti pembahasan.</li>
+          </ul>
+        </div>
+        <div class="slide">
+          <div class="slide-top"><span class="ico"><svg><use href="#i-flow"/></svg></span><h4>Algoritma</h4></div>
+          <ul class="blist">
+            <li><b>Membuat minuman:</b> menyiapkan bahan, memasukkan bahan sesuai urutan, mengaduk, lalu menyajikan.</li>
+            <li><b>Menyelesaikan tugas di komputer:</b> membuka aplikasi, membuat dokumen, mengetik isi, menyimpan file, dan memeriksa hasil.</li>
+            <li><b>Prosedur keselamatan:</b> mengikuti langkah yang telah ditentukan secara berurutan ketika terjadi keadaan darurat agar tindakan dilakukan secara teratur dan tidak membingungkan.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cnav">
+        <button class="cbtn" id="cPrev" aria-label="Contoh sebelumnya"><svg style="transform:rotate(180deg)"><use href="#i-chev"/></svg></button>
+        <div class="dots" id="dots"><i class="dot on"></i><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+        <button class="cbtn" id="cNext" aria-label="Contoh berikutnya"><svg><use href="#i-chev"/></svg></button>
+      </div>
+      <div class="foot">Lanjut ke materi berikutnya lewat menu di bawah.</div>
+    </section>
+  </main>
+
+  <!-- ============ WORD ============ -->
+  <main class="page" id="p-word">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-doc"/></svg> Materi II</div>
+      <h1>Tools Microsoft Word</h1>
+      <p>Ikon, tombol, dan perintah di dalam ribbon Word yang membuat dokumen jadi rapi dan dikerjakan lebih cepat.</p>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">A · Definisi</div><h2>Apa itu tools?</h2></div>
+      <div class="card">
+        <p>Tools pada Microsoft Word adalah sekumpulan ikon, tombol, perintah, dan fitur yang digunakan untuk membuat, mengedit, memformat, mengatur tata letak, serta menyempurnakan dokumen. Fungsinya membantu pengguna bekerja lebih cepat, teratur, dan menghasilkan dokumen yang lebih rapi.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B1 · Tab Home, grup Font</div>
+        <h2>Font tools</h2>
+        <p>Font Tools adalah kumpulan fitur untuk mengatur jenis, ukuran, warna, dan gaya huruf pada teks yang dipilih. Digunakan ketika pengguna ingin mengubah tampilan tulisan.</p>
+      </div>
+      <div class="card">
+        <div class="drow"><div class="dico"><svg><use href="#i-font"/></svg></div><div><div class="dt">Font style / family</div><div class="dd">Digunakan untuk memilih jenis rupa huruf atau font, misalnya Calibri, Arial, atau Times New Roman.</div></div></div>
+        <div class="drow"><div class="dico">pt</div><div><div class="dt">Font size</div><div class="dd">Digunakan untuk mengatur besar atau kecilnya huruf, biasanya dalam satuan point (pt).</div></div></div>
+        <div class="drow"><div class="dico">A</div><div><div class="dt">Font color</div><div class="dd">Digunakan untuk mengubah warna teks agar sesuai kebutuhan atau memberi penekanan pada bagian tertentu.</div></div></div>
+        <div class="drow"><div class="dico">▮</div><div><div class="dt">Font background / highlight</div><div class="dd">Digunakan untuk memberi warna latar belakang pada teks seperti menggunakan stabilo.</div></div></div>
+        <div class="drow"><div class="dico" style="font-weight:800">B</div><div><div class="dt">Bold</div><div class="dd">Digunakan untuk menebalkan teks sehingga lebih menonjol dan mudah diperhatikan.</div></div></div>
+        <div class="drow"><div class="dico" style="font-style:italic">I</div><div><div class="dt">Italic</div><div class="dd">Digunakan untuk memiringkan teks, misalnya untuk istilah asing atau memberikan penekanan.</div></div></div>
+        <div class="drow"><div class="dico" style="text-decoration:underline">U</div><div><div class="dt">Underline</div><div class="dd">Digunakan untuk memberikan garis bawah pada teks yang dipilih.</div></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B2 · Tab Home, grup Paragraph</div>
+        <h2>Paragraph tools</h2>
+        <p>Paragraph Tools adalah kumpulan fitur untuk mengatur tampilan dan susunan paragraf, seperti perataan, jarak antarbaris, serta daftar.</p>
+      </div>
+      <div class="card">
+        <div class="drow"><div class="dico" style="transform:scaleX(-1)"><svg><use href="#i-align"/></svg></div><div><div class="dt">Align right</div><div class="dd">Digunakan untuk meratakan teks ke sisi kanan halaman.</div></div></div>
+        <div class="drow"><div class="dico"><svg><use href="#i-align"/></svg></div><div><div class="dt">Align left</div><div class="dd">Digunakan untuk meratakan teks ke sisi kiri halaman.</div></div></div>
+        <div class="drow"><div class="dico">≡</div><div><div class="dt">Align center</div><div class="dd">Digunakan untuk menempatkan teks di tengah halaman atau baris.</div></div></div>
+        <div class="drow"><div class="dico">▤</div><div><div class="dt">Align justify</div><div class="dd">Digunakan untuk meratakan teks secara seimbang pada batas kiri dan kanan.</div></div></div>
+        <div class="drow"><div class="dico">↕</div><div><div class="dt">Line spacing</div><div class="dd">Digunakan untuk mengatur jarak vertikal antarbaris dalam paragraf.</div></div></div>
+        <div class="drow"><div class="dico">1.</div><div><div class="dt">Numbering</div><div class="dd">Digunakan untuk membuat daftar dengan urutan angka atau huruf.</div></div></div>
+        <div class="drow"><div class="dico">•</div><div><div class="dt">Bullets</div><div class="dd">Digunakan untuk membuat daftar menggunakan simbol atau tanda poin.</div></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B3 · Tab Insert</div>
+        <h2>Insert tools</h2>
+        <p>Insert Tools adalah kumpulan fitur untuk menambahkan objek selain teks ke dalam dokumen, agar dokumen lebih informatif dan menarik.</p>
+      </div>
+      <div class="card">
+        <div class="drow"><div class="dico"><svg><use href="#i-plus"/></svg></div><div><div class="dt">Insert shape</div><div class="dd">Digunakan untuk menyisipkan bentuk seperti garis, kotak, lingkaran, atau bentuk lainnya.</div></div></div>
+        <div class="drow"><div class="dico"><svg><use href="#i-grid"/></svg></div><div><div class="dt">Insert table</div><div class="dd">Digunakan untuk membuat tabel yang terdiri dari baris dan kolom untuk menyajikan data secara terstruktur.</div></div></div>
+        <div class="drow"><div class="dico">🖼</div><div><div class="dt">Insert picture</div><div class="dd">Digunakan untuk memasukkan gambar atau foto ke dalam dokumen.</div></div></div>
+        <div class="drow"><div class="dico">★</div><div><div class="dt">Insert icon</div><div class="dd">Digunakan untuk memasukkan ikon atau simbol visual yang tersedia di Word.</div></div></div>
+        <div class="drow"><div class="dico"><svg><use href="#i-tree"/></svg></div><div><div class="dt">Insert SmartArt</div><div class="dd">Digunakan untuk membuat diagram visual yang membantu menyajikan hubungan, proses, atau hierarki informasi.</div></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B4 · Tab Layout</div>
+        <h2>Page layout tools</h2>
+        <p>Page Layout Tools adalah kumpulan fitur untuk mengatur karakter halaman dan tata letak dokumen agar sesuai dengan kebutuhan.</p>
+      </div>
+      <div class="card">
+        <div class="drow"><div class="dico"><svg><use href="#i-page"/></svg></div><div><div class="dt">Margin page</div><div class="dd">Digunakan untuk mengatur jarak antara tepi kertas dan isi dokumen.</div></div></div>
+        <div class="drow"><div class="dico">A4</div><div><div class="dt">Size page</div><div class="dd">Digunakan untuk menentukan ukuran kertas, misalnya A4, Letter, atau Legal.</div></div></div>
+        <div class="drow"><div class="dico">⟳</div><div><div class="dt">Orientation page</div><div class="dd">Digunakan untuk menentukan arah halaman, yaitu Portrait atau Landscape.</div></div></div>
+        <div class="drow"><div class="dico">‖</div><div><div class="dt">Coloumn page</div><div class="dd">Digunakan untuk membagi teks dalam satu halaman menjadi dua kolom atau lebih.</div></div></div>
+      </div>
+      <div class="foot">Materi berikutnya: pengenalan shortcut keyboard.</div>
+    </section>
+  </main>
+
+  <!-- ============ SHORTCUT ============ -->
+  <main class="page" id="p-shortcut">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-bolt"/></svg> Materi III</div>
+      <h1>Pengenalan Shortcut</h1>
+      <p>Kombinasi tombol keyboard yang menjalankan perintah tanpa perlu membuka menu satu per satu.</p>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">A · Definisi</div><h2>Apa itu shortcut?</h2></div>
+      <div class="card">
+        <p>Shortcut adalah kombinasi tombol pada keyboard yang digunakan untuk menjalankan perintah tertentu dengan lebih cepat tanpa harus selalu memilih menu menggunakan mouse. Fungsinya mempercepat pekerjaan dan membantu pengguna bekerja lebih efisien.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B · Contoh shortcut</div>
+        <h2>Menyalin, memindah, dan membatalkan</h2>
+      </div>
+      <div class="kbd-grid">
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>C</kbd></div><div class="kt">Digunakan untuk menyalin teks, gambar, atau objek yang dipilih <b>(Copy)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>X</kbd></div><div class="kt">Digunakan untuk memotong teks, gambar, atau objek yang dipilih <b>(Cut)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>V</kbd></div><div class="kt">Digunakan untuk menempelkan hasil salinan atau potongan pada lokasi yang ditentukan <b>(Paste)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>Z</kbd></div><div class="kt">Digunakan untuk membatalkan tindakan terakhir <b>(Undo)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>Y</kbd></div><div class="kt">Digunakan untuk mengulangi kembali tindakan yang sebelumnya dibatalkan <b>(Redo)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>A</kbd></div><div class="kt">Digunakan untuk memilih seluruh teks atau seluruh objek yang tersedia dalam area kerja <b>(Select All)</b>.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">B · Contoh shortcut</div><h2>Memformat teks</h2></div>
+      <div class="kbd-grid">
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>B</kbd></div><div class="kt">Digunakan untuk menebalkan teks yang dipilih <b>(Bold)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>I</kbd></div><div class="kt">Digunakan untuk memiringkan teks yang dipilih <b>(Italic)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>U</kbd></div><div class="kt">Digunakan untuk memberi garis bawah pada teks yang dipilih <b>(Underline)</b>.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>R</kbd></div><div class="kt">Digunakan untuk meratakan teks ke sisi kanan.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>L</kbd></div><div class="kt">Digunakan untuk meratakan teks ke sisi kiri.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>E</kbd></div><div class="kt">Digunakan untuk meratakan teks ke tengah.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Ctrl</kbd><span>+</span><kbd>J</kbd></div><div class="kt">Digunakan untuk meratakan teks ke kiri dan kanan secara bersamaan <b>(Justify)</b>.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">B · Contoh shortcut</div><h2>Mengatur jendela dan layar</h2></div>
+      <div class="kbd-grid">
+        <div class="kbd-row"><div class="keys"><kbd>Alt</kbd><span>+</span><kbd>Tab</kbd></div><div class="kt">Digunakan untuk berpindah dengan cepat di antara aplikasi atau jendela yang sedang terbuka.</div></div>
+        <div class="kbd-row"><div class="keys" style="min-width:132px"><kbd>Win</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>S</kbd></div><div class="kt">Digunakan untuk membuka Snipping Tool dan memilih bagian layar yang ingin diambil sebagai tangkapan layar.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Win</kbd><span>+</span><kbd>←</kbd></div><div class="kt">Digunakan untuk menempatkan jendela aktif ke sisi kiri layar.</div></div>
+        <div class="kbd-row"><div class="keys"><kbd>Win</kbd><span>+</span><kbd>→</kbd></div><div class="kt">Digunakan untuk menempatkan jendela aktif ke sisi kanan layar.</div></div>
+      </div>
+      <div class="foot">Materi berikutnya: struktur data tree.</div>
+    </section>
+  </main>
+
+  <!-- ============ TREE ============ -->
+  <main class="page" id="p-tree">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-tree"/></svg> Materi IV</div>
+      <h1>Struktur Data Tree</h1>
+      <p>Cara menyusun informasi bertingkat dari atas ke bawah, seperti bagan struktur organisasi atau silsilah keluarga.</p>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">A · Definisi</div><h2>Apa itu tree?</h2></div>
+      <div class="card">
+        <p>Tree adalah struktur data yang menyusun elemen secara hierarkis seperti hubungan bertingkat dari atas ke bawah. Fungsinya membantu mengorganisasi dan menggambarkan hubungan antarbagian sehingga informasi yang memiliki tingkatan dapat dipahami dengan lebih mudah.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head">
+        <div class="sec-kicker">B · Bagian–bagian tree</div>
+        <h2>Coba sendiri istilahnya</h2>
+        <p>Ketuk salah satu istilah untuk melihat node mana yang dimaksud pada diagram.</p>
+      </div>
+
+      <div class="tree-wrap">
+        <div class="tree-tabs" id="treeTabs">
+          <button class="on" data-role="root">Root</button>
+          <button data-role="node">Node</button>
+          <button data-role="parent">Parent</button>
+          <button data-role="child">Child</button>
+          <button data-role="sibling">Sibling</button>
+          <button data-role="leaf">Leaf</button>
+        </div>
+        <svg class="tree-svg" viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+          <line class="tedge" x1="160" y1="42" x2="86"  y2="98"/>
+          <line class="tedge" x1="160" y1="42" x2="234" y2="98"/>
+          <line class="tedge" x1="86"  y1="98" x2="44"  y2="162"/>
+          <line class="tedge" x1="86"  y1="98" x2="128" y2="162"/>
+          <line class="tedge" x1="234" y1="98" x2="234" y2="162"/>
+          <g class="tn" data-id="A"><circle cx="160" cy="34" r="19"/><text x="160" y="34">A</text></g>
+          <g class="tn" data-id="B"><circle cx="86"  cy="98" r="19"/><text x="86"  y="98">B</text></g>
+          <g class="tn" data-id="C"><circle cx="234" cy="98" r="19"/><text x="234" y="98">C</text></g>
+          <g class="tn" data-id="D"><circle cx="44"  cy="170" r="19"/><text x="44"  y="170">D</text></g>
+          <g class="tn" data-id="E"><circle cx="128" cy="170" r="19"/><text x="128" y="170">E</text></g>
+          <g class="tn" data-id="F"><circle cx="234" cy="170" r="19"/><text x="234" y="170">F</text></g>
+        </svg>
+        <div class="tnote" id="treeNote"></div>
+      </div>
+
+      <div class="card">
+        <div class="drow"><div class="dico">R</div><div><div class="dt">Root</div><div class="dd">Simpul paling atas dalam sebuah tree dan menjadi titik awal dari struktur hierarki.</div></div></div>
+        <div class="drow"><div class="dico">N</div><div><div class="dt">Node</div><div class="dd">Setiap elemen atau simpul yang terdapat dalam struktur tree.</div></div></div>
+        <div class="drow"><div class="dico">P</div><div><div class="dt">Parent</div><div class="dd">Node yang memiliki satu atau lebih child di bawahnya.</div></div></div>
+        <div class="drow"><div class="dico">C</div><div><div class="dt">Child</div><div class="dd">Node yang berada langsung di bawah sebuah parent.</div></div></div>
+        <div class="drow"><div class="dico">S</div><div><div class="dt">Sibling</div><div class="dd">Beberapa node yang memiliki parent yang sama.</div></div></div>
+        <div class="drow"><div class="dico">L</div><div><div class="dt">Leaf</div><div class="dd">Node yang tidak memiliki child lagi dan biasanya berada pada bagian paling ujung tree.</div></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sec-head"><div class="sec-kicker">C · Lima jenis</div><h2>Jenis-jenis tree</h2></div>
+      <div class="card">
+        <div class="mini">
+          <svg viewBox="0 0 70 56"><line class="ml" x1="35" y1="12" x2="17" y2="32"/><line class="ml" x1="35" y1="12" x2="53" y2="32"/><line class="ml" x1="17" y1="32" x2="8" y2="48"/><line class="ml" x1="17" y1="32" x2="26" y2="48"/><circle class="mc" cx="35" cy="12" r="5"/><circle class="mc" cx="17" cy="32" r="5"/><circle class="mc" cx="53" cy="32" r="5"/><circle class="mc" cx="8" cy="48" r="5"/><circle class="mc" cx="26" cy="48" r="5"/></svg>
+          <div><div class="mt">Binary tree</div><div class="md">Tree yang setiap node-nya memiliki paling banyak dua child, yaitu child kiri dan child kanan.</div></div>
+        </div>
+        <div class="mini">
+          <svg viewBox="0 0 70 56"><line class="ml" x1="35" y1="12" x2="17" y2="32"/><line class="ml" x1="35" y1="12" x2="53" y2="32"/><line class="ml" x1="17" y1="32" x2="8" y2="48"/><line class="ml" x1="17" y1="32" x2="26" y2="48"/><line class="ml" x1="53" y1="32" x2="44" y2="48"/><circle class="mc" cx="35" cy="12" r="5"/><circle class="mc" cx="17" cy="32" r="5"/><circle class="mc" cx="53" cy="32" r="5"/><circle class="mc" cx="8" cy="48" r="5"/><circle class="mc" cx="26" cy="48" r="5"/><circle class="mc" cx="44" cy="48" r="5"/></svg>
+          <div><div class="mt">Complete binary tree</div><div class="md">Binary tree yang setiap level terisi penuh, kecuali mungkin level terakhir, dan pengisian pada level terakhir dilakukan dari kiri ke kanan.</div></div>
+        </div>
+        <div class="mini">
+          <svg viewBox="0 0 70 56"><line class="ml" x1="18" y1="10" x2="32" y2="27"/><line class="ml" x1="32" y1="27" x2="46" y2="44"/><circle class="mc" cx="18" cy="10" r="5"/><circle class="mc" cx="32" cy="27" r="5"/><circle class="mc" cx="46" cy="44" r="5"/></svg>
+          <div><div class="mt">Skewed binary tree</div><div class="md">Binary tree yang sebagian besar atau seluruh node-nya memiliki satu child sehingga bentuknya menyerupai rangkaian yang condong ke satu sisi.</div></div>
+        </div>
+        <div class="mini">
+          <svg viewBox="0 0 70 56"><line class="ml" x1="35" y1="12" x2="17" y2="32"/><line class="ml" x1="35" y1="12" x2="53" y2="32"/><line class="ml" x1="17" y1="32" x2="8" y2="48"/><line class="ml" x1="17" y1="32" x2="26" y2="48"/><line class="ml" x1="53" y1="32" x2="46" y2="48"/><line class="ml" x1="53" y1="32" x2="62" y2="48"/><circle class="mc" cx="35" cy="12" r="5"/><circle class="mc" cx="17" cy="32" r="5"/><circle class="mc" cx="53" cy="32" r="5"/><circle class="mc" cx="8" cy="48" r="5"/><circle class="mc" cx="26" cy="48" r="5"/><rect class="mo" x="41" y="43" width="10" height="10" rx="2"/><rect class="mo" x="57" y="43" width="10" height="10" rx="2"/></svg>
+          <div><div class="mt">Extended binary tree</div><div class="md">Binary tree yang menambahkan external node atau node kosong pada posisi child yang tidak dimiliki untuk melengkapi struktur dua cabang.</div></div>
+        </div>
+        <div class="mini">
+          <svg viewBox="0 0 70 56"><line class="ml" x1="14" y1="10" x2="14" y2="46"/><line class="ml" x1="14" y1="26" x2="34" y2="26"/><line class="ml" x1="14" y1="44" x2="34" y2="44"/><circle class="mc" cx="14" cy="10" r="5"/><circle class="mc" cx="38" cy="26" r="5"/><circle class="mc" cx="38" cy="44" r="5"/></svg>
+          <div><div class="mt">Lineal chart</div><div class="md">Bentuk penyajian struktur hubungan yang tersusun memanjang secara hierarkis sehingga hubungan antarbagian dapat ditampilkan seperti bagan garis bertingkat.</div></div>
+        </div>
+      </div>
+      <div class="foot">Sudah paham semua materi? Uji di menu Kuis.</div>
+    </section>
+  </main>
+
+  <!-- ============ KUIS ============ -->
+  <main class="page" id="p-kuis">
+    <section class="hero">
+      <div class="eyebrow"><svg><use href="#i-quiz"/></svg> Materi V</div>
+      <h1>Kuis interaktif</h1>
+      <p>Lima soal acak dari bank 60 soal setiap sesi. Ulangi kuis untuk mendapat soal yang berbeda.</p>
+    </section>
+
+    <section class="section">
+      <div id="quizIntro">
+        <div class="card">
+          <h3><span class="ico"><svg><use href="#i-target"/></svg></span> Sebelum mulai</h3>
+          <ul class="blist">
+            <li>Soal mencakup berpikir komputasional, tools Word, shortcut, dan struktur data tree.</li>
+            <li>Jawaban benar ditandai hijau dan jawaban salah ditandai merah, disertai kunci jawabannya.</li>
+            <li>Skor serta rekap seluruh jawaban muncul di akhir sesi.</li>
+          </ul>
+        </div>
+        <button class="btn btn-primary" id="startBtn" style="width:100%;justify-content:center"><svg><use href="#i-play"/></svg> Mulai kuis</button>
+      </div>
+
+      <div id="quizPlay" style="display:none">
+        <div class="q-top"><span id="qCount">Soal 1 dari 5</span><span id="qScore">Benar: 0</span></div>
+        <div class="bar"><i id="qBar"></i></div>
+        <div class="qtext" id="qText"></div>
+        <div id="qOpts"></div>
+        <div class="verdict" id="qVerdict"></div>
+        <div class="q-actions"><button class="btn btn-primary" id="nextBtn" style="display:none"><span id="nextLabel">Soal berikutnya</span> <svg><use href="#i-chev"/></svg></button></div>
+      </div>
+
+      <div id="quizDone" style="display:none">
+        <div class="card result">
+          <div class="ring">
+            <svg width="132" height="132" viewBox="0 0 132 132">
+              <circle cx="66" cy="66" r="56" fill="none" stroke="var(--silver-2)" stroke-width="11"/>
+              <circle id="ringFg" cx="66" cy="66" r="56" fill="none" stroke="var(--violet)" stroke-width="11" stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="351.86" style="transition:stroke-dashoffset .8s ease"/>
+            </svg>
+            <div class="rv"><b id="scoreNum">0</b><span>dari 100</span></div>
+          </div>
+          <div id="scoreMsg" style="font-weight:600"></div>
+          <div id="scoreSub" style="font-size:13px;color:var(--muted);margin-top:4px"></div>
+          <div class="recap" id="recap"></div>
+        </div>
+        <button class="btn btn-primary" id="againBtn" style="width:100%;justify-content:center"><svg><use href="#i-repeat"/></svg> Ulangi dengan 5 soal berbeda</button>
+        <div class="foot">Bank soal berisi 60 pertanyaan dari seluruh materi semester ganjil.</div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" id="nav">
+    <button data-tab="home" class="on"><span class="nb"><svg><use href="#i-home"/></svg></span><span>Beranda</span></button>
+    <button data-tab="bekom"><span class="nb"><svg><use href="#i-brain"/></svg></span><span>Bekom</span></button>
+    <button data-tab="word"><span class="nb"><svg><use href="#i-doc"/></svg></span><span>Word</span></button>
+    <button data-tab="shortcut"><span class="nb"><svg><use href="#i-key"/></svg></span><span>Shortcut</span></button>
+    <button data-tab="tree"><span class="nb"><svg><use href="#i-tree"/></svg></span><span>Tree</span></button>
+    <button data-tab="kuis"><span class="nb"><svg><use href="#i-quiz"/></svg></span><span>Kuis</span></button>
+  </nav>
+</div>
+
+<script>
+const pages={home:'p-home',bekom:'p-bekom',word:'p-word',shortcut:'p-shortcut',tree:'p-tree',kuis:'p-kuis'};
+function go(tab){
+  Object.values(pages).forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(pages[tab]).classList.add('active');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+const root=document.documentElement;
+let saved=null;
+try{saved=localStorage.getItem('mpi9-theme');}catch(e){}
+root.setAttribute('data-theme', saved || 'light');
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme',next);
+  try{localStorage.setItem('mpi9-theme',next);}catch(e){}
+});
+
+const car=document.getElementById('carousel');
+const dots=[...document.querySelectorAll('#dots .dot')];
+const slides=[...car.querySelectorAll('.slide')];
+const cPrev=document.getElementById('cPrev'),cNext=document.getElementById('cNext');
+
+function slideIndex(){
+  const mid=car.scrollLeft+car.clientWidth/2;
+  let best=0,bd=Infinity;
+  slides.forEach((s,i)=>{
+    const c=s.offsetLeft+s.offsetWidth/2-car.offsetLeft;
+    const d=Math.abs(c-mid);
+    if(d<bd){bd=d;best=i;}
+  });
+  return best;
+}
+function syncCarousel(){
+  const i=slideIndex();
+  dots.forEach((d,n)=>d.classList.toggle('on',n===i));
+  cPrev.disabled=i===0;
+  cNext.disabled=i===slides.length-1;
+}
+function goSlide(i){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  const s=slides[i];
+  car.scrollTo({left:s.offsetLeft-car.offsetLeft-(car.clientWidth-s.offsetWidth)/2,behavior:'smooth'});
+}
+cPrev.addEventListener('click',()=>goSlide(slideIndex()-1));
+cNext.addEventListener('click',()=>goSlide(slideIndex()+1));
+car.addEventListener('scroll',syncCarousel,{passive:true});
+
+/* drag to scroll (mouse / trackpad / pen) */
+let dragging=false,startX=0,startScroll=0,moved=0;
+car.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='touch') return;
+  dragging=true;moved=0;startX=e.clientX;startScroll=car.scrollLeft;
+  car.style.scrollSnapType='none';car.style.cursor='grabbing';
+});
+window.addEventListener('pointermove',e=>{
+  if(!dragging) return;
+  const dx=e.clientX-startX;
+  moved=Math.max(moved,Math.abs(dx));
+  car.scrollLeft=startScroll-dx;
+  if(moved>4) e.preventDefault();
+});
+window.addEventListener('pointerup',()=>{
+  if(!dragging) return;
+  dragging=false;car.style.cursor='';
+  car.style.scrollSnapType='x mandatory';
+  goSlide(slideIndex());
+});
+car.addEventListener('dragstart',e=>e.preventDefault());
+/* horizontal wheel / shift+wheel */
+car.addEventListener('wheel',e=>{
+  if(Math.abs(e.deltaX)>Math.abs(e.deltaY)) return;
+  if(e.shiftKey){car.scrollLeft+=e.deltaY;e.preventDefault();}
+},{passive:false});
+syncCarousel();
+window.addEventListener('resize',syncCarousel);
+
+/* tree explorer */
+const ROLES={
+  root:{on:['A'],note:'<b>Root</b> — node A adalah simpul paling atas dan menjadi titik awal seluruh struktur.'},
+  node:{on:['A','B','C','D','E','F'],note:'<b>Node</b> — seluruh simpul A sampai F disebut node, yaitu setiap elemen di dalam tree.'},
+  parent:{on:['A','B','C'],note:'<b>Parent</b> — A, B, dan C punya child di bawahnya. A adalah parent dari B dan C.'},
+  child:{on:['B','C','D','E','F'],note:'<b>Child</b> — B dan C adalah child dari A; D dan E child dari B; F child dari C.'},
+  sibling:{on:['D','E'],note:'<b>Sibling</b> — D dan E bersaudara karena sama-sama memiliki parent B. B dan C juga sibling.'},
+  leaf:{on:['D','E','F'],note:'<b>Leaf</b> — D, E, dan F tidak punya child lagi sehingga berada di ujung tree.'}
+};
+const treeNote=document.getElementById('treeNote');
+function setRole(r){
+  const cfg=ROLES[r];
+  document.querySelectorAll('.tn').forEach(n=>{
+    const hit=cfg.on.includes(n.dataset.id);
+    n.classList.toggle('hit',hit); n.classList.toggle('dim',!hit);
+  });
+  treeNote.innerHTML=cfg.note;
+  document.querySelectorAll('#treeTabs button').forEach(b=>b.classList.toggle('on',b.dataset.role===r));
+}
+document.querySelectorAll('#treeTabs button').forEach(b=>b.addEventListener('click',()=>setRole(b.dataset.role)));
+setRole('root');
+
+/* quiz bank — 60 soal */
+const BANK=[
+{q:"Saat merapikan kamar, proses membagi pekerjaan menjadi merapikan tempat tidur, melipat pakaian, menyusun buku, dan membersihkan lantai merupakan penerapan dari...",o:["Abstraksi","Dekomposisi","Pengenalan Pola","Algoritma"],a:1},
+{q:"Ketika mengerjakan tugas sekolah, membagi pekerjaan menjadi mencari materi, membuat kerangka, menulis isi, dan memeriksa hasil adalah contoh dari...",o:["Dekomposisi","Algoritma","Pengenalan Pola","Abstraksi"],a:0},
+{q:"Menyiapkan acara kelas dengan membagi tugas menjadi menentukan waktu, membuat daftar kebutuhan, membagi peran, dan menyiapkan tempat disebut sebagai...",o:["Pengenalan Pola","Abstraksi","Dekomposisi","Algoritma"],a:2},
+{q:"Saat belajar matematika, kemampuan mengenali bahwa beberapa soal berbeda memiliki pola rumus yang sama sehingga cara penyelesaiannya dapat digunakan kembali adalah penerapan dari...",o:["Abstraksi","Dekomposisi","Algoritma","Pengenalan Pola"],a:3},
+{q:"Memperhatikan bahwa jalan tertentu selalu padat pada jam tertentu saat berangkat ke sekolah sehingga dapat memilih rute atau waktu yang lebih sesuai merupakan contoh dari...",o:["Pengenalan Pola","Abstraksi","Algoritma","Dekomposisi"],a:0},
+{q:"Ketika berbelanja dan melihat bahwa harga barang tertentu sering turun pada periode promosi sehingga pembelian dapat direncanakan, kita sedang menerapkan...",o:["Dekomposisi","Pengenalan Pola","Abstraksi","Algoritma"],a:1},
+{q:"Saat membaca peta, kita hanya fokus pada nama lokasi, arah, dan jalur yang dibutuhkan tanpa memikirkan setiap detail gambar peta. Hal ini adalah contoh penerapan...",o:["Abstraksi","Algoritma","Pengenalan Pola","Dekomposisi"],a:0},
+{q:"Menggunakan mesin cuci dengan cukup memahami pilihan program, tombol mulai, dan pengaturan dasar tanpa harus memahami seluruh mekanisme di dalam mesin merupakan contoh dari...",o:["Pengenalan Pola","Dekomposisi","Abstraksi","Algoritma"],a:2},
+{q:"Saat merangkum materi pelajaran, kita mengambil gagasan utama dan mengabaikan detail yang tidak diperlukan. Proses ini disebut...",o:["Algoritma","Abstraksi","Dekomposisi","Pengenalan Pola"],a:1},
+{q:"Membuat minuman dengan menyiapkan bahan, memasukkan bahan sesuai urutan, mengaduk, lalu menyajikan adalah penerapan dari...",o:["Algoritma","Dekomposisi","Pengenalan Pola","Abstraksi"],a:0},
+{q:"Menyelesaikan tugas di komputer melalui tahapan membuka aplikasi, membuat dokumen, mengetik isi, menyimpan file, dan memeriksa hasil merupakan contoh...",o:["Dekomposisi","Abstraksi","Algoritma","Pengenalan Pola"],a:2},
+{q:"Mengikuti langkah prosedur keselamatan yang telah ditentukan secara berurutan ketika terjadi keadaan darurat agar tindakan tidak membingungkan merupakan penerapan dari...",o:["Pengenalan Pola","Algoritma","Abstraksi","Dekomposisi"],a:1},
+{q:"Manakah dari berikut ini yang bukan merupakan bagian dari berpikir komputasional?",o:["Dekomposisi","Pengenalan Pola","Manipulasi Data","Abstraksi"],a:2},
+{q:"Berpikir komputasional adalah metode pemecahan masalah yang menggunakan cara berpikir...",o:["Logis, terstruktur, dan analitis","Intuitif, cepat, dan kreatif","Abstrak, rumit, dan matematis","Subjektif, lambat, dan tidak terarah"],a:0},
+{q:"Tujuan utama dari dekomposisi dalam menghadapi masalah yang kompleks adalah...",o:["Menyatukan berbagai masalah menjadi satu","Fokus menyelesaikan setiap bagian satu per satu","Mengabaikan detail yang tidak penting","Mengulangi solusi yang pernah digunakan"],a:1},
+{q:"Fungsi dari pengenalan pola adalah...",o:["Menyaring informasi yang tidak relevan","Menyusun instruksi langkah demi langkah","Memanfaatkan pengalaman atau solusi dari masalah sebelumnya","Memecah masalah besar menjadi kecil"],a:2},
+{q:"Proses menyaring informasi dengan berfokus pada hal-hal yang penting dan relevan disebut...",o:["Algoritma","Abstraksi","Pengenalan Pola","Dekomposisi"],a:1},
+{q:"Mengapa algoritma penting dalam penyelesaian masalah?",o:["Karena memberikan urutan kerja yang terarah dan sistematis","Karena membantu mengabaikan detail masalah","Karena dapat memecah masalah menjadi kecil","Karena membantu mengenali kesamaan data"],a:0},
+{q:"Memisahkan sebuah mobil menjadi bagian-bagian seperti mesin, ban, dan interior untuk diperbaiki adalah contoh dari...",o:["Abstraksi","Dekomposisi","Algoritma","Pengenalan Pola"],a:1},
+{q:"Menyadari bahwa setiap kali hujan lalu lintas akan macet merupakan bentuk dari...",o:["Algoritma","Dekomposisi","Pengenalan Pola","Abstraksi"],a:2},
+{q:"Menggambar peta hanya dengan garis utama dan nama jalan tanpa menggambar pohon atau rumah di sekitarnya adalah contoh dari...",o:["Pengenalan Pola","Algoritma","Dekomposisi","Abstraksi"],a:3},
+{q:"Resep masakan yang berisi bahan dan cara memasak secara berurutan adalah bentuk dari...",o:["Algoritma","Dekomposisi","Abstraksi","Pengenalan Pola"],a:0},
+{q:"Seorang guru melihat bahwa banyak siswanya kesulitan di materi A setiap tahunnya. Ini adalah penerapan...",o:["Dekomposisi","Pengenalan Pola","Algoritma","Abstraksi"],a:1},
+{q:"Memecah proyek pembuatan website menjadi desain antarmuka, pembuatan database, dan penulisan kode program adalah contoh...",o:["Algoritma","Pengenalan Pola","Dekomposisi","Abstraksi"],a:2},
+{q:"Membuat ringkasan dari buku tebal menjadi hanya 5 halaman berisi poin-poin penting adalah penerapan dari...",o:["Abstraksi","Algoritma","Dekomposisi","Pengenalan Pola"],a:0},
+{q:"Kumpulan fitur untuk mengatur jenis, ukuran, warna, dan gaya huruf pada Microsoft Word berada pada grup...",o:["Paragraph Tools","Font Tools","Insert Tools","Page Layout Tools"],a:1},
+{q:"Fitur yang digunakan untuk memilih jenis rupa huruf, misalnya Calibri atau Arial, adalah...",o:["Font size","Font color","Font style/family","Font background"],a:2},
+{q:"Jika ingin menebalkan teks pada Microsoft Word agar lebih menonjol, fitur yang digunakan adalah...",o:["Italic","Underline","Bold","Font color"],a:2},
+{q:"Fitur “Align justify” pada Paragraph Tools berfungsi untuk...",o:["Meratakan teks ke sisi kiri halaman","Meratakan teks ke sisi kanan halaman","Menempatkan teks di tengah halaman","Meratakan teks secara seimbang pada batas kiri dan kanan"],a:3},
+{q:"Untuk membuat daftar dengan urutan angka atau huruf, fitur yang tepat digunakan adalah...",o:["Bullets","Line spacing","Numbering","Align center"],a:2},
+{q:"Grup fitur yang digunakan untuk menyisipkan objek seperti gambar, tabel, dan bentuk ke dalam dokumen adalah...",o:["Page Layout Tools","Insert Tools","Font Tools","Paragraph Tools"],a:1},
+{q:"Fitur “Insert SmartArt” pada Microsoft Word digunakan untuk...",o:["Memasukkan gambar atau foto","Membuat tabel yang terdiri dari baris dan kolom","Menyisipkan ikon atau simbol visual","Membuat diagram visual untuk menyajikan hubungan, proses, atau hierarki informasi"],a:3},
+{q:"Kumpulan fitur untuk mengatur jarak antara tepi kertas dan isi dokumen, ukuran kertas, serta arah halaman berada pada tab...",o:["Home","Insert","Layout atau Page Layout","View"],a:2},
+{q:"Fitur “Margin page” digunakan untuk...",o:["Menentukan arah halaman","Membagi teks menjadi beberapa kolom","Menentukan ukuran kertas","Mengatur jarak antara tepi kertas dan isi dokumen"],a:3},
+{q:"Shortcut yang digunakan untuk memotong teks, gambar, atau objek yang dipilih adalah...",o:["Ctrl + C","Ctrl + X","Ctrl + V","Ctrl + Z"],a:1},
+{q:"Shortcut “Ctrl + Y” berfungsi untuk...",o:["Membatalkan tindakan terakhir (Undo)","Menyalin teks","Mengulangi kembali tindakan yang sebelumnya dibatalkan (Redo)","Menyimpan dokumen"],a:2},
+{q:"Untuk meratakan teks ke tengah menggunakan shortcut, kombinasi tombol yang ditekan adalah...",o:["Ctrl + L","Ctrl + R","Ctrl + E","Ctrl + J"],a:2},
+{q:"Shortcut “Alt + Tab” digunakan untuk...",o:["Memilih seluruh teks","Membuka Snipping Tool","Berpindah dengan cepat di antara aplikasi atau jendela yang sedang terbuka","Menempatkan jendela aktif ke sisi kiri layar"],a:2},
+{q:"Shortcut yang digunakan untuk memilih seluruh teks atau seluruh objek dalam area kerja adalah...",o:["Ctrl + A","Ctrl + S","Ctrl + D","Ctrl + P"],a:0},
+{q:"Kombinasi tombol “Win + Shift + S” digunakan untuk...",o:["Membuka kalkulator","Membuka Snipping Tool untuk mengambil tangkapan layar","Mengunci layar komputer","Membuka menu Start"],a:1},
+{q:"Struktur data yang menyusun elemen secara hierarkis seperti hubungan bertingkat dari atas ke bawah disebut...",o:["Array","Stack","Queue","Tree"],a:3},
+{q:"Simpul paling atas dalam sebuah tree yang menjadi titik awal dari struktur hierarki disebut...",o:["Node","Parent","Root","Child"],a:2},
+{q:"Node yang memiliki satu atau lebih child di bawahnya disebut...",o:["Sibling","Leaf","Parent","Root"],a:2},
+{q:"Node yang tidak memiliki child lagi dan biasanya berada pada bagian paling ujung tree disebut...",o:["Leaf","Child","Sibling","Node"],a:0},
+{q:"Beberapa node yang memiliki parent yang sama disebut sebagai...",o:["Root","Sibling","Leaf","Child"],a:1},
+{q:"Jenis tree di mana setiap node-nya memiliki paling banyak dua child (child kiri dan child kanan) disebut...",o:["Skewed binary tree","Extended binary tree","Binary tree","Complete binary tree"],a:2},
+{q:"Binary tree yang sebagian besar atau seluruh node-nya memiliki satu child sehingga bentuknya menyerupai rangkaian yang condong ke satu sisi disebut...",o:["Skewed binary tree","Complete binary tree","Binary tree","Extended binary tree"],a:0},
+{q:"Binary tree yang menambahkan external node atau node kosong pada posisi child yang tidak dimiliki untuk melengkapi struktur dua cabang disebut...",o:["Lineal chart","Complete binary tree","Extended binary tree","Skewed binary tree"],a:2},
+{q:"Shortcut “Ctrl + U” pada Microsoft Word digunakan untuk...",o:["Menebalkan teks","Memiringkan teks","Memberi garis bawah pada teks","Mencetak dokumen"],a:2},
+{q:"Fitur “Insert shape” digunakan untuk menyisipkan objek berupa...",o:["Gambar atau foto","Bentuk seperti garis, kotak, lingkaran","Tabel data","Diagram struktur"],a:1},
+{q:"Fitur “Orientation page” pada Page Layout Tools memberikan pilihan arah halaman yaitu...",o:["A4 dan Letter","Portrait dan Landscape","Margin Normal dan Narrow","Satu Kolom dan Dua Kolom"],a:1},
+{q:"Jika ingin membatalkan kesalahan ketik terakhir yang baru saja dilakukan, shortcut yang tepat adalah...",o:["Ctrl + C","Ctrl + X","Ctrl + Z","Ctrl + Y"],a:2},
+{q:"Shortcut “Win arrow kiri” berfungsi untuk...",o:["Meminimalkan semua jendela","Menempatkan jendela aktif ke sisi kanan layar","Menutup aplikasi","Menempatkan jendela aktif ke sisi kiri layar"],a:3},
+{q:"Fitur “Line spacing” dalam grup Paragraph berguna untuk...",o:["Mengatur jarak antara huruf","Mengatur perataan teks kiri dan kanan","Mengatur jarak vertikal antarbaris dalam paragraf","Membuat daftar dengan tanda poin"],a:2},
+{q:"Untuk memberikan warna latar belakang pada teks layaknya stabilo, fitur yang digunakan adalah...",o:["Font color","Font style","Font background/highlight","Insert shape"],a:2},
+{q:"Bentuk penyajian struktur hubungan yang tersusun memanjang secara hierarkis sehingga hubungan antarbagian dapat ditampilkan seperti bagan garis bertingkat disebut...",o:["Lineal chart","Binary tree","SmartArt","Table"],a:0},
+{q:"Fitur “Coloumn page” pada tab Layout berguna ketika kita ingin membuat dokumen dengan format seperti...",o:["Surat resmi","Koran atau artikel majalah","Poster gambar","Presentasi"],a:1},
+{q:"Jika ingin meratakan teks pada bagian kanan saja, fitur yang digunakan adalah...",o:["Align center","Align left","Align right","Justify"],a:2},
+{q:"Fitur “Insert table” sangat cocok digunakan saat kita perlu menyajikan...",o:["Gambar pemandangan","Diagram hierarki","Data secara terstruktur dalam baris dan kolom","Video pembelajaran"],a:2},
+{q:"Shortcut “Ctrl + B” berfungsi sama dengan ikon fitur... pada grup Font.",o:["Italic","Bold","Underline","Font color"],a:1}
+];
+
+const KEYS=['A','B','C','D'];
+let pool=[],current=[],idx=0,correct=0,log=[];
+function refillPool(){pool=BANK.map((_,i)=>i);for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}}
+function drawFive(){if(pool.length<5) refillPool();return pool.splice(0,5);}
+
+const elIntro=document.getElementById('quizIntro'),elPlay=document.getElementById('quizPlay'),elDone=document.getElementById('quizDone');
+const qText=document.getElementById('qText'),qOpts=document.getElementById('qOpts'),qBar=document.getElementById('qBar');
+const qCount=document.getElementById('qCount'),qScore=document.getElementById('qScore'),qVerdict=document.getElementById('qVerdict');
+const nextBtn=document.getElementById('nextBtn'),nextLabel=document.getElementById('nextLabel');
+
+function startQuiz(){
+  current=drawFive();idx=0;correct=0;log=[];
+  elIntro.style.display='none';elDone.style.display='none';elPlay.style.display='block';
+  render();
+}
+function render(){
+  const q=BANK[current[idx]];
+  qCount.textContent='Soal '+(idx+1)+' dari 5';
+  qScore.textContent='Benar: '+correct;
+  qBar.style.width=(idx/5*100)+'%';
+  qText.textContent=q.q;
+  qVerdict.className='verdict';qVerdict.innerHTML='';
+  nextBtn.style.display='none';
+  nextLabel.textContent=idx===4?'Lihat hasil':'Soal berikutnya';
+  qOpts.innerHTML='';
+  q.o.forEach((text,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML='<span class="key">'+KEYS[i]+'</span><span class="txt"></span>';
+    b.querySelector('.txt').textContent=text;
+    b.addEventListener('click',()=>answer(i,q));
+    qOpts.appendChild(b);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function answer(pickIdx,q){
+  [...qOpts.children].forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.a) b.classList.add('correct');
+    if(i===pickIdx&&i!==q.a) b.classList.add('wrong');
+  });
+  const ok=pickIdx===q.a;
+  if(ok) correct++;
+  log.push({q:q.q,ok,pick:q.o[pickIdx],ans:q.o[q.a],key:KEYS[q.a]});
+  qScore.textContent='Benar: '+correct;
+  qVerdict.className='verdict show '+(ok?'ok':'no');
+  qVerdict.innerHTML='<svg><use href="#'+(ok?'i-check':'i-x')+'"/></svg><span></span>';
+  qVerdict.querySelector('span').textContent=ok?'Jawaban benar.':'Belum tepat. Kunci jawaban: '+KEYS[q.a]+'. '+q.o[q.a];
+  qBar.style.width=((idx+1)/5*100)+'%';
+  nextBtn.style.display='inline-flex';
+}
+nextBtn.addEventListener('click',()=>{if(idx===4) finish(); else {idx++;render();}});
+function finish(){
+  elPlay.style.display='none';elDone.style.display='block';
+  const score=correct*20;
+  document.getElementById('scoreNum').textContent=score;
+  const ring=document.getElementById('ringFg');
+  ring.setAttribute('stroke','var(--'+(score>=80?'good':score>=60?'violet':'bad')+')');
+  setTimeout(()=>{ring.style.strokeDashoffset=351.86*(1-score/100);},60);
+  document.getElementById('scoreMsg').textContent=score===100?'Sempurna!':score>=80?'Bagus sekali.':score>=60?'Sudah cukup baik.':'Perlu diulang lagi.';
+  document.getElementById('scoreSub').textContent=correct+' dari 5 soal dijawab benar.';
+  const recap=document.getElementById('recap');recap.innerHTML='';
+  log.forEach((l,i)=>{
+    const d=document.createElement('div');
+    d.className='ri '+(l.ok?'ok':'no');
+    d.innerHTML='<span class="rk"><svg><use href="#'+(l.ok?'i-check':'i-x')+'"/></svg></span><span><b>'+(i+1)+'.</b> <span class="qq"></span><span class="ra"></span></span>';
+    d.querySelector('.qq').textContent=l.q;
+    d.querySelector('.ra').textContent=l.ok?'Jawabanmu benar: '+l.ans:'Jawabanmu: '+l.pick+' · Kunci: '+l.key+'. '+l.ans;
+    recap.appendChild(d);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('startBtn').addEventListener('click',startQuiz);
+document.getElementById('againBtn').addEventListener('click',startQuiz);
+refillPool();
+</script>
+</body>
+</html>
